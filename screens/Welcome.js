@@ -17,8 +17,11 @@ export default class Welcome extends Component {
     render() {
         return (
             <ImageBackground source={bgImage} style={styles.containter}>
-                <Text style={styles.fixedText}> FOSOVCB </Text>
-                <Animatable.Text animation='slideInUp'
+                <Animatable.Text animation='slideInDown'
+                    style={styles.fixedText}>
+                    FOSOVCB
+                </Animatable.Text>
+                <Animatable.Text animation={welComeZoomIn}
                     style={styles.welcomText}>
                     Welcome
                 </Animatable.Text>
@@ -27,17 +30,49 @@ export default class Welcome extends Component {
     }
 }
 
+const welComeZoomIn = {
+    0: {
+        scale: 0.5,
+        opacity: 0.5
+    },
+    0.4: {
+        scale: 1.5,
+        opacity: 0.8
+    },
+    0.6: {
+        scale: 2,
+        opacity: 1
+    },
+    0.8: {
+        scale: 2.5,
+        opacity: 1
+    },
+    1: {
+        scale: 1,
+        opacity: 1
+    }
+}
+
 const styles = StyleSheet.create({
     containter: {
         flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
     },
     fixedText: {
         fontSize: 50,
-        marginTop: 10
+        marginBottom: '45%',
+        fontFamily: 'sans-serif-medium',
+        color: '#fff'
     },
     welcomText: {
-        justifyContent: 'center'
+        fontSize: 40,
+        marginTop: '15%',
+        fontFamily: 'GillSans-SemiBold',
+        color: '#fff',
+        textShadowColor: '#111',
+        textShadowOffset: { width: -1, height: 1 },
+        textShadowRadius: 5
     }
 });
 

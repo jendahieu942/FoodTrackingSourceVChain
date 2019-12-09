@@ -3,7 +3,7 @@ import {
     StyleSheet,
     Text,
     ImageBackground,
-    View,
+    Alert,
     TextInput,
     TouchableOpacity,
     StatusBar
@@ -14,19 +14,75 @@ import bgImage from '../assets/images/login-wallpaper.jpg';
 import { login } from '../components/api.js';
 
 export default class Login extends Component {
+    constructor(props) {
+        super(props);
+    }
+
     state = {
         'username': '',
         'password': '',
-        'authenization': ''
-    }
-
-    SignupAction = async () => {
-        console.info("sign up")
+        'authenization': '',
+        'inputUN': styles.input,
+        'inputPW': styles.input,
+        'errorMsg': '',
     }
 
     LoginAction = async () => {
-        if (this.state.username)
+        if (this.state.username == '' || this.state.password == '') {
+            Alert.alert(
+                'Error',
+                'Input your correct user name and password!',
+                [
+                    {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                    },
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ],
+                { cancelable: false },
+            );
+        } else {
             this.state.authenization = login(this.state.username, this.state.password)
+        }
+    }
+
+    InputUserNameChecker = async () => {
+        console.info('vao day')
+        if (this.state.username.length == 0) {
+            this.setState(
+                {
+                    inputUN: styles.inputError,
+                    errorMsg: 'username is required'
+                }
+            )
+        } else {
+            this.setState(
+                {
+                    inputUN: styles.input,
+                    errorMsg: ''
+                }
+            )
+        }
+    }
+
+    InputPasswordChecker = async () => {
+        console.info('vao day')
+        if (this.state.password.length == 0) {
+            this.setState(
+                {
+                    inputPW: styles.inputError,
+                    errorMsg: 'password is required'
+                }
+            )
+        } else {
+            this.setState(
+                {
+                    inputPW: styles.input,
+                    errorMsg: ''
+                }
+            )
+        }
     }
 
     render() {
@@ -43,22 +99,26 @@ export default class Login extends Component {
                     animation='bounceInLeft'
                     style={styles.inputAnimate}>
                     <TextInput
-                        style={styles.input}
+                        style={this.state.inputUN}
                         placeholder='user name'
                         onChangeText={TextInputValue =>
                             this.setState({ username: TextInputValue })}
+                        onEndEditing={this.InputUserNameChecker.bind(this)}
                     />
                 </Animatable.View>
                 <Animatable.View
                     animation='bounceInRight'
                     style={styles.inputAnimate}>
                     <TextInput
-                        style={styles.input}
+                        style={this.state.inputPW}
                         placeholder='password'
                         secureTextEntry
                         onChangeText={TextInputValue =>
-                            this.setState({ password: TextInputValue })} />
+                            this.setState({ password: TextInputValue })}
+                        onEndEditing={this.InputPasswordChecker.bind(this)}
+                    />
                 </Animatable.View>
+                <Text style={styles.errorMsg}>{this.state.errorMsg}</Text>
                 <Animatable.View
                     style={styles.btnContainer}
                     animation='slideInUp'>
@@ -67,13 +127,6 @@ export default class Login extends Component {
                         onPress={this.LoginAction.bind(this)}>
                         <Text style={styles.btnTxt}>
                             Login
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.userBtn}
-                        onPress={this.SignupAction.bind(this)}>
-                        <Text style={styles.btnTxt}>
-                            Sign Up
                         </Text>
                     </TouchableOpacity>
                 </Animatable.View>
@@ -112,9 +165,23 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         fontSize: 20
     },
+    inputError: {
+        width: '75%',
+        backgroundColor: '#fff',
+        padding: 10,
+        margin: 10,
+        borderRadius: 10,
+        fontSize: 20,
+        borderColor: '#ff0000',
+        borderWidth: 1,
+    },
+    errorMsg: {
+        color: '#ff0000',
+        fontSize: 20
+    },
     btnContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         width: '75%',
         marginTop: 20
     },
@@ -129,10 +196,9 @@ const styles = StyleSheet.create({
         fontSize: 25,
         color: '#fff',
         textDecorationStyle: 'solid',
-        textDecorationStyle: 'solid',
         textShadowColor: '#000',
         textShadowOffset: { width: -1, height: 1 },
-        textShadowRadius: 5
+        textShadowRadius: 5,
     }
 });
 
